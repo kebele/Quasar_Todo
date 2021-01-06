@@ -2,13 +2,9 @@
   <!-- <q-page class="flex flex-center"> sayfadaki herşeyi center yapıyor -->
   <q-page class="bg-grey-3 column">
     <div class="row q-pa-sm bg-primary">
-      <q-input  filled bg-color="white" v-model="text" label="Label" dense>
-       
-
-       
-
+      <q-input class="col" square filled bg-color="white" v-model="newTask" @keyup.enter="addTask" label="add task" dense>
         <template v-slot:append>
-          <q-btn round dense flat icon="add" />
+          <q-btn @click="addTask" round dense flat icon="add" />
         </template>
       </q-input>
     </div>
@@ -45,6 +41,12 @@
         </q-item-section>
       </q-item>
     </q-list>
+    <div v-if="!tasks.length" class="no-tasks absolute-center">
+      <q-icon name="check" size="100px" color="primary"></q-icon>
+      <div class="text-h5 text-primary text-center">
+        no tasks
+      </div>
+    </div>
   </q-page>
 </template>
 
@@ -52,39 +54,49 @@
 export default {
   data() {
     return {
+      newTask : '',
       tasks: [
-        {
-          title: "ronaldo",
-          done: false
-        },
-        {
-          title: "messi",
-          done: false
-        },
-        {
-          title: "benzema",
-          done: false
-        }
+        // {
+        //   title: "ronaldo",
+        //   done: false
+        // },
+        // {
+        //   title: "messi",
+        //   done: false
+        // },
+        // {
+        //   title: "benzema",
+        //   done: false
+        // }
       ]
     };
   },
   methods: {
-    deleteTask(index){
+    deleteTask(index) {
       //quasar dan plugins den dialog dan confirm in kodunu alıp koyduk
-      this.$q.dialog({
-        //bunun çalışması için quasar.conf.js de plugin de ['Dialog'] eklemeliyiz, aynı şekilde notify ın çalışması içinde ayunı işlemi yapmalıyız
-        title: 'Confirm',
-        message: 'Are you sure?',
-        cancel: true,
-        persistent: true
-      }).onOk(() => {
-        //index i alıp 1 tane silecek, index neyse onu silecek
-      this.tasks.splice(index,1)
-      this.$q.notify('task deleted!')
+      this.$q
+        .dialog({
+          //bunun çalışması için quasar.conf.js de plugin de ['Dialog'] eklemeliyiz, aynı şekilde notify ın çalışması içinde ayunı işlemi yapmalıyız
+          title: "Confirm",
+          message: "Are you sure?",
+          cancel: true,
+          persistent: true
+        })
+        .onOk(() => {
+          //index i alıp 1 tane silecek, index neyse onu silecek
+          this.tasks.splice(index, 1);
+          this.$q.notify("task deleted!");
+        });
+    },
+    addTask(){
+      // console.log('addTask ');
+      this.tasks.push({
+        title : this.newTask,
+        done : false
       })
-      
+      this.newTask = ''
     }
-  },
+  }
 };
 </script>
 
@@ -94,5 +106,8 @@ export default {
     text-decoration: line-through;
     color: red;
   }
+}
+.no-tasks{
+  opacity: 0.5;
 }
 </style>
